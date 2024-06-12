@@ -32,7 +32,7 @@ import (
 
 const (
 	coverDefaultSize = 600
-	coverCacheFormat = "png"
+	coverCacheFormat = "jpg"
 )
 
 func (c *Controller) ServeGetCoverArt(w http.ResponseWriter, r *http.Request) *spec.Response {
@@ -160,7 +160,7 @@ func coverScaleAndSave(reader io.Reader, cachePath string, size int) error {
 		// don't upscale images
 		width = src.Bounds().Dx()
 	}
-	if err := imaging.Save(imaging.Resize(src, width, 0, imaging.Lanczos), cachePath); err != nil {
+	if err := imaging.Save(imaging.Resize(src, width, 0, imaging.Lanczos), cachePath, imaging.JPEGQuality(80)); err != nil {
 		return fmt.Errorf("caching %q: %w", cachePath, err)
 	}
 	return nil
