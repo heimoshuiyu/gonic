@@ -68,6 +68,7 @@ func main() {
 	confPlaylistsPath := flag.String("playlists-path", "", "path to your list of new or existing m3u playlists that gonic can manage")
 
 	confDBPath := flag.String("db-path", "gonic.db", "path to database (optional)")
+	confDBLog := flag.Bool("db-log", false, "database logging (optional)")
 
 	confScanIntervalMins := flag.Uint("scan-interval", 0, "interval (in minutes) to automatically scan music (optional)")
 	confScanAtStart := flag.Bool("scan-at-start-enabled", false, "whether to perform an initial scan at startup (optional)")
@@ -141,6 +142,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("error opening database: %v\n", err)
 	}
+	dbc.LogMode(*confDBLog)
 	defer dbc.Close()
 
 	err = dbc.Migrate(db.MigrationContext{
