@@ -58,6 +58,7 @@ func main() {
 
 	confPodcastPurgeAgeDays := flag.Uint("podcast-purge-age", 0, "age (in days) to purge podcast episodes if not accessed (optional)")
 	confPodcastPath := flag.String("podcast-path", "", "path to podcasts")
+	confPodcastDownload := flag.Bool("podcast-download", false, "whether to download podcasts (optional, default false)")
 
 	confCachePath := flag.String("cache-path", "", "path to cache")
 
@@ -379,6 +380,10 @@ func main() {
 	})
 
 	errgrp.Go(func() error {
+		if !*confPodcastDownload {
+			return nil
+		}
+
 		defer logJob("podcast download")()
 
 		ctxTick(ctx, 5*time.Second, func() {
