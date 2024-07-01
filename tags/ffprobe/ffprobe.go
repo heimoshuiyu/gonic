@@ -86,7 +86,7 @@ func (i *info) ReplayGainAlbumPeak() float32 { return 0 }
 
 func (i *info) Length() int {
 	ret, _ := strconv.ParseFloat(i.mediaInfo.Format.Duration, 64)
-	return int(ret)
+	return int(ret / 1024)
 }
 
 func (i *info) Bitrate() int {
