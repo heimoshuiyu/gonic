@@ -45,6 +45,7 @@ import (
 	"go.senan.xyz/gonic/scrobble"
 	"go.senan.xyz/gonic/server/ctrladmin"
 	"go.senan.xyz/gonic/server/ctrlsubsonic"
+	"go.senan.xyz/gonic/tags/ffprobe"
 	"go.senan.xyz/gonic/tags/tagcommon"
 	"go.senan.xyz/gonic/tags/taglib"
 	"go.senan.xyz/gonic/transcode"
@@ -185,7 +186,7 @@ func main() {
 
 	tagReader := tagcommon.ChainReader{
 		taglib.TagLib{},
-		// ffprobe reader?
+		ffprobe.FFProbe{},
 		// nfo reader?
 	}
 
