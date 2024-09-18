@@ -24,8 +24,8 @@ import (
 
 	"go.senan.xyz/gonic/db"
 	"go.senan.xyz/gonic/fileutil"
-	"go.senan.xyz/gonic/scanner/coverresolve"
 	"go.senan.xyz/gonic/tags/tagcommon"
+	"go.senan.xyz/wrtag/coverparse"
 )
 
 var (
@@ -267,7 +267,7 @@ func (s *Scanner) scanDir(tx *db.DB, st *State, absPath string) error {
 	}
 
 	var tracks []string
-	var covers []string
+	var cover string
 	for _, item := range items {
 		absPath := filepath.Join(absPath, item.Name())
 		if s.excludePattern != nil && s.excludePattern.MatchString(absPath) {
@@ -278,8 +278,8 @@ func (s *Scanner) scanDir(tx *db.DB, st *State, absPath string) error {
 			continue
 		}
 
-		if coverresolve.IsCover(item.Name()) {
-			covers = append(covers, item.Name())
+		if coverparse.IsCover(item.Name()) {
+			coverparse.BestBetween(&cover, item.Name())
 			continue
 		}
 		if s.tagReader.CanRead(absPath) {
@@ -287,8 +287,6 @@ func (s *Scanner) scanDir(tx *db.DB, st *State, absPath string) error {
 			continue
 		}
 	}
-
-	cover := coverresolve.SelectCover(covers)
 
 	pdir, pbasename := filepath.Split(filepath.Dir(relPath))
 	var parent db.Album

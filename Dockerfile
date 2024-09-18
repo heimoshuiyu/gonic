@@ -1,12 +1,13 @@
-FROM alpine:3.19 AS builder-taglib
+FROM alpine:3.20 AS builder-taglib
 WORKDIR /tmp
 COPY alpine/taglib/APKBUILD .
 RUN apk update && \
-    apk add --no-cache abuild && \
-    abuild-keygen -a -n && \
+    apk add --no-cache abuild doas && \
+    echo "permit nopass root" > /etc/doas.conf && \
+    abuild-keygen -a -n -i && \
     REPODEST=/pkgs abuild -F -r
 
-FROM golang:1.21-alpine AS builder
+FROM golang:1.23-alpine AS builder
 RUN apk add -U --no-cache \
     build-base \
     ca-certificates \
@@ -26,7 +27,7 @@ RUN go mod download
 COPY . .
 RUN GOOS=linux go build -o gonic cmd/gonic/gonic.go
 
-FROM alpine:3.19
+FROM alpine:3.20
 LABEL org.opencontainers.image.source https://github.com/sentriz/gonic
 RUN apk add -U --no-cache \
     ffmpeg \
